@@ -1,0 +1,43 @@
+---
+title: "ukb_extraction_baseline_data"
+output: html_document
+---
+
+```{r}
+# extract baseline data
+library(dplyr)
+baseline_data <- select(ukb_extracted,contains(".0.0"))
+
+baseline_data$eid <- rownames(baseline_data)
+
+col_order <- c("eid",colnames(baseline_data)[1:62])
+
+baseline_data  <- baseline_data[,col_order]
+```
+
+```{r}
+write.csv(baseline_data,file = 'TDS_group3/Data/baseline_data.csv')
+```
+
+```{r}
+#merge baseline_data with jame's data
+merge_data <- merge(baseline_data,Jame_data, by= 'eid')
+head(merge_data)
+write.csv(merge_data,file = 'TDS_group3/Data/merge_data.csv')
+
+```
+```{r}
+merge_final <- read.csv("clean_dataset/merge_final.csv")
+head(merge_final)
+```
+```{r}
+#combine merge_final with protein data
+protein_data <- read.csv("TDS_group3/Data/olink_protein_matrix.csv")
+colnames(protein_data)[1] <- "EID"
+
+merge_data_with_protein <- merge(merge_final,protein_data, by= 'EID')
+head(merge_data_with_protein)
+
+write.csv(merge_data_with_protein,file = 'merge_data_with_protein.csv')
+```
+
